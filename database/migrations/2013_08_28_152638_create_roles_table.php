@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contrats', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->date('date_debut');
-            $table->date('date_fin');
-            $table->string('type_contrat');
-            $table->boolean('statut');
-            $table->date('date_Debut');
-            $table->date('date_Fin');
-            $table->foreignIdFor(\App\Models\Consultant::class);
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }
@@ -29,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contrats');
+        Schema::dropIfExists('roles');
     }
 };

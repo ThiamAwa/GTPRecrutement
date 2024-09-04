@@ -17,7 +17,17 @@ class CandidatFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nom' => $this->faker->lastName,
+            'prenom' => $this->faker->firstName,
+            'telephone' => $this->faker->phoneNumber,
+            'email' => $this->faker->unique()->safeEmail,
+            'adresse' => $this->faker->address,
+            'status' => $this->faker->randomElement(['En cours', 'Accepter','Refuser']),
+            'date_de_candidature' => $this->faker->date,
+//            'statut_evaluation' => $this->faker->randomElement(['Non évalué', 'En cours', 'Évalué']),
+            'date_de_naissance' => $this->faker->date,
+            'cv' => $this->faker->url,
+            'lm' => $this->faker->url,
         ];
     }
 }

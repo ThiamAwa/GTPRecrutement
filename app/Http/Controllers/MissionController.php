@@ -13,7 +13,8 @@ class MissionController extends Controller
      */
     public function index()
     {
-        //
+        $missions = Mission::all();
+        return response()->json($missions);
     }
 
     /**
@@ -27,10 +28,23 @@ class MissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMissionRequest $request)
+    public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'titre' => 'required|string|max:255',
+            'description' => 'required|string',
+            'date_debut' => 'required|date',
+            'date_fin' => 'nullable|date',
+            'status' => 'required|in:en_attente,en_cours,terminée',
+            'consultant_id' => 'required|exists:consultants,id',
+            'client_id' => 'required|exists:clients,id',
+        ]);
+
+        $mission = Mission::create($validatedData);
+
+        return response()->json($mission, 201);
     }
+
 
     /**
      * Display the specified resource.
@@ -59,8 +73,10 @@ class MissionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Mission $mission)
+    public function destroy($id)
     {
-        //
+        Mission::destroy($id);
+
+        return response()->json(null, 204);
     }
 }

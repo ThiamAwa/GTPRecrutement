@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('managers', function (Blueprint $table) {
             $table->id();
+            $table->string('nom'); // Nom du manager
+            $table->string('prenom'); // Prénom du manager
+            $table->string('email')->unique(); // Email du manager, unique
+            $table->string('telephone')->nullable(); // Numéro de téléphone du manager, optionnel
+            $table->string('poste'); // Poste occupé par le manager
+            $table->text('adresse')->nullable(); // Adresse du manager, optionnel
+            $table->string('photo')->nullable();
             $table->timestamps();
         });
     }

@@ -13,9 +13,34 @@ class ConsultantController extends Controller
      */
     public function index()
     {
-        //
+        $consultants = Consultant::all();
+        return response()->json($consultants);
     }
 
+//    filtrage consultant
+
+    public function filtreConsultants(Request $request)
+    {
+        $query = Consultant::query();
+
+        // Appliquer les filtres
+        if ($request->has('competence')) {
+            $query->where('competences', 'like', '%' . $request->input('competence') . '%');
+        }
+
+        if ($request->has('experience')) {
+            $query->where('experiences_professionnelles', 'like', '%' . $request->input('experience') . '%');
+        }
+
+        if ($request->has('disponibilite')) {
+            $query->where('status', $request->input('disponibilite'));
+        }
+
+        // Récupérer les consultants filtrés
+        $consultants = $query->get();
+
+        return response()->json($consultants);
+    }
     /**
      * Show the form for creating a new resource.
      */

@@ -13,6 +13,22 @@ return new class extends Migration
     {
         Schema::create('consultants', function (Blueprint $table) {
             $table->id();
+            $table->string('nom');
+            $table->string('prenom');
+            $table->string('telephone');
+            $table->string('email')->unique();
+            $table->string('adresse');
+            $table->string('competences');
+            $table->string('experiences');
+            $table->string('status');
+            $table->date('date_disponibilite');
+            $table->string('statut_evaluation');
+            $table->date('date_de_naissance');
+            $table->date('contrat');
+            $table->string('notes_mission')->nullable();
+            $table->string('commentaires')->nullable();
+            $table->string('cv');
+            $table->string('missions_attribuees');
             $table->timestamps();
         });
     }

@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('missions', function (Blueprint $table) {
             $table->id();
+            $table->string('titre');
+            $table->text('description');
+            $table->date('date_debut');
+            $table->date('date_fin')->nullable();
+            $table->enum('status', ['en_attente', 'en_cours', 'terminée'])->default('en_attente');
+            $table->foreignIdFor(\App\Models\Consultant::class);
+            $table->foreignIdFor(\App\Models\Client::class);
             $table->timestamps();
         });
     }
