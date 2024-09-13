@@ -13,7 +13,7 @@ class ConsultantController extends Controller
      */
     public function index()
     {
-        $consultants = Consultant::all();
+        $consultants = Consultant::with('user')->get();
         return response()->json($consultants);
     }
 
@@ -87,5 +87,28 @@ class ConsultantController extends Controller
     public function destroy(Consultant $consultant)
     {
         //
+
+
+    }
+
+    public function filtrageCandidat(Request $request)
+    {
+        $query = Candidat::query();
+
+        if ($request->has('competences')) {
+            $competences = explode(',', $request->input('competences'));
+            foreach ($competences as $competence) {
+                $query->where('competences', 'LIKE', '%' . $competence . '%');
+            }
+        }
+
+        if ($request->has('experience_min')) {
+            $experienceMin = $request->input('experience_min');
+            $query->where('experience', '>=', $experienceMin);
+        }
+
+        $candidats = $query->get();
+
+        return response()->json($candidats);
     }
 }

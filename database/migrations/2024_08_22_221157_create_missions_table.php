@@ -17,8 +17,8 @@ return new class extends Migration
             $table->text('description');
             $table->date('date_debut');
             $table->date('date_fin')->nullable();
-            $table->enum('status', ['en_attente', 'en_cours', 'terminée'])->default('en_attente');
-            $table->foreignIdFor(\App\Models\Consultant::class);
+            $table->enum('status', ['en_attente', 'en_cours', 'terminee'])->default('en_attente');
+            $table->foreignIdFor(\App\Models\Consultant::class)->nullable()->constrained();
             $table->foreignIdFor(\App\Models\Client::class);
             $table->timestamps();
         });

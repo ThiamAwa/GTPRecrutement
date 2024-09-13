@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('offres', function (Blueprint $table) {
             $table->id();
+            $table->string('titre', 500);
+            $table->text('description');
+            $table->string('competences', 500);
+            $table->string('experience', 500);
+            $table->string('lieu', 255);
+            $table->string('type_contrat', 255);
+            $table->date('date_debut');
+            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
             $table->timestamps();
         });
     }

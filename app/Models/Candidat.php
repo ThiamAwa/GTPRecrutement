@@ -19,6 +19,15 @@ class Candidat extends Model
         'date_de_candidature',
         'date_de_naissance',
         'lm',
-        'cv'
+        'cv',
+        'competences',
+        'experience',
+        'offre_id',
+
     ];
+
+    public function offre()
+    {
+        return $this->belongsTo(Offre::class, 'offre_id');
+    }
 }

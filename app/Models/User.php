@@ -24,13 +24,41 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role_id'
     ];
 
-    public function hasRole($role)
+
+    public function role()
     {
-        return $this->role === $role;
+        return $this->belongsTo(Role::class);
     }
+
+    public function isManager()
+    {
+        return $this->role && $this->role->name === 'manager';
+    }
+
+    public function isClient()
+    {
+        return $this->role && $this->role->name === 'client';
+    }
+
+    public function isConsultant()
+    {
+        return $this->role && $this->role->name === 'consultant';
+    }
+
+    public function client()
+    {
+        return $this->hasOne(Client::class);
+    }
+
+    public function consultant()
+    {
+        return $this->hasOne(Consultant::class);
+    }
+
+
 
     /**
      * The attributes that should be hidden for serialization.

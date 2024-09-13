@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('telephone');
             $table->string('email')->unique();
             $table->string('adresse');
+            $table->text('competences')->nullable();
+            $table->text('experience')->nullable();
+//            $table->foreignId('offre_id')->constrained('offres')->onDelete('cascade');
             $table->string('status');
             $table->date('date_de_candidature');
             $table->date('date_de_naissance');

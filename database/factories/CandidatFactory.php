@@ -28,6 +28,7 @@ class CandidatFactory extends Factory
             'date_de_naissance' => $this->faker->date,
             'cv' => $this->faker->url,
             'lm' => $this->faker->url,
+//            'offre_id'=>1
         ];
     }
 }

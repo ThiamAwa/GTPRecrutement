@@ -9,21 +9,20 @@ class Consultant extends Model
 {
     use HasFactory;
      protected $fillable = [
-         'nom',
-         'prenom',
-         'email',
+         'telephone',
          'adresse',
          'competences',
          'experiences',
          'status',
          'date_disponibilite',
          'statut_evaluation',
-         'contrat',
          'notes_mission',
          'commentaires',
          'date_de_naissance',
-         'missions_attribuees',
          'cv'
      ];
-
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

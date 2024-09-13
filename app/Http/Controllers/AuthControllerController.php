@@ -14,14 +14,15 @@ class AuthControllerController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string'
+            'password' => 'required|string',
+            'role_id' => 'required|exists:roles,id'
         ]);
-
+        $role_id = $request->role_id ?? 1;
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => 1
+            'role_id' => $role_id,
 
         ]);
 
@@ -54,16 +55,35 @@ class AuthControllerController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
-            return response()->json(['message' => 'Email ou mot de passe incorrect.'], 401);
+            return response()->json( ['user' => $user,
+                'role' => $user->role->name]);
         }
 
         $token = $user->createToken('apiToken')->plainTextToken;
 
         $res = [
+            'access_token' => $token,
+            'token_type' => 'Bearer',
             'user' => $user,
-            'token' => $token
+            'role' => $user->role->name
         ];
 
         return response()->json($res, 200);
     }
+
+    public function getAuthenticatedUser()
+    {
+        $user = Auth::user();
+        return response()->json([
+            'user' => $user,
+            'role' => $user->role->name
+        ]);
+    }
+
+    public function getUser(Request $request)
+    {
+        return $request->user();
+    }
+
+
 }

@@ -21,8 +21,9 @@ class Mission extends Model
 
     public function consultant()
     {
-        return $this->belongsTo(Consultant::class);
+        return $this->belongsTo(Consultant::class, 'consultant_id');
     }
+
 
     public function client()
     {

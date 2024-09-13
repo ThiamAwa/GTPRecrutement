@@ -13,7 +13,8 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
+        $clients = Client::with('user')->get();
+        return response()->json($clients);
     }
 
     /**
@@ -27,9 +28,23 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreClientRequest $request)
+    public function store(Request $request)
     {
-        //
+        // Créer l'utilisateur
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role_id' => 2, // Assigner le rôle de client
+        ]);
+
+        // Créer le client lié à cet utilisateur
+        $client = Client::create([
+            'user_id' => $user->id,
+            'company' => $request->company,
+        ]);
+
+        return response()->json($client);
     }
 
     /**
