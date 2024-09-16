@@ -18,6 +18,11 @@ return new class extends Migration
             $table->date('date_debut');
             $table->date('date_fin')->nullable();
             $table->enum('status', ['en_attente', 'en_cours', 'terminee'])->default('en_attente');
+            $table->string('type_profil_recherche');
+            $table->string('competences_requises');
+            $table->string('niveau_experience');
+            $table->integer('duree')->nullable();
+            $table->text('objectifs');
             $table->foreignIdFor(\App\Models\Consultant::class)->nullable()->constrained();
             $table->foreignIdFor(\App\Models\Client::class);
             $table->timestamps();

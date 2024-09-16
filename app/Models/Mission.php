@@ -15,6 +15,11 @@ class Mission extends Model
         'date_debut',
         'date_fin',
         'status',
+        'type_profil_recherche',
+        'competences_requises',
+        'niveau_experience',
+        'duree',
+        'objectifs',
         'consultant_id',
         'client_id',
     ];

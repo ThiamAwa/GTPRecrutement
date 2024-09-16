@@ -15,14 +15,14 @@ class AuthControllerController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string',
-            'role_id' => 'required|exists:roles,id'
+            'role_id' => '3'
         ]);
         $role_id = $request->role_id ?? 1;
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => $role_id,
+            'role_id' => 3,
 
         ]);
 
@@ -47,29 +47,50 @@ class AuthControllerController extends Controller
 
     public function login(Request $request)
     {
+        // Validation des données d'entrée
         $data = $request->validate([
             'email' => 'required|string',
             'password' => 'required|string'
         ]);
 
+        // Recherche de l'utilisateur par email
         $user = User::where('email', $data['email'])->first();
 
+        // Vérification des informations de l'utilisateur et du mot de passe
         if (!$user || !Hash::check($data['password'], $user->password)) {
-            return response()->json( ['user' => $user,
-                'role' => $user->role->name]);
+            return response()->json([
+                'message' => 'Invalid email or password.'
+            ], 401);
         }
 
+        // Génération du token d'authentification
         $token = $user->createToken('apiToken')->plainTextToken;
 
-        $res = [
+        // Récupération du rôle de l'utilisateur
+        $role = $user->role->name;
+
+        // Initialisation de la réponse de base
+        $response = [
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user,
-            'role' => $user->role->name
+            'role' => $role,
         ];
 
-        return response()->json($res, 200);
+        // Si l'utilisateur est un client, récupérer les infos du client
+        if ($user->role->name === 'Client') {
+            $response['client'] = $user->client;
+        }
+
+        if ($user->role->name === 'Consultant') {
+            $response['consultant'] = $user->consultant;
+        }
+
+
+        return response()->json($response, 200);
     }
+
+
 
     public function getAuthenticatedUser()
     {

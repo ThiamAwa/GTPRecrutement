@@ -69,7 +69,7 @@ Route::put('/missions/{id}/status', [\App\Http\Controllers\MissionController::cl
 Route::get('/missions/ongoing', [\App\Http\Controllers\MissionController::class, 'getOngoingMissions']);
 Route::get('/missions/{id}', [\App\Http\Controllers\MissionController::class, 'getMissionDetails']);
 Route::get('/missions/statistics', [\App\Http\Controllers\MissionController::class, 'getMissionStatistics']);
-Route::post('/missions/soumettreBesion', [\App\Http\Controllers\MissionController::class,'soumettreBesion']);
+Route::middleware('auth:sanctum')->post('/missions/soumettreBesion', [\App\Http\Controllers\MissionController::class,'soumettreBesion']);
 
 Route::get('/missions/overview', [\App\Http\Controllers\MissionController::class, 'overview']);
 
@@ -105,3 +105,14 @@ Route::apiResource('/client',\App\Http\Controllers\ClientController::class);
 //Route::group(['middleware' => 'isConsultant'], function () {
 //    Route::get('/consultant', [\App\Http\Controllers\ConsultantController::class, 'index']);
 //});
+
+//Notification
+
+// routes/api.php
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/notifications/unread', [\App\Http\Controllers\NotificationController::class, 'getUnreadNotifications']);
+    Route::post('/notifications/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
+    Route::post('/notifications', [\App\Http\Controllers\NotificationController::class, 'store']);
+
+});
+

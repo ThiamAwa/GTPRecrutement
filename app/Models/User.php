@@ -50,12 +50,17 @@ class User extends Authenticatable
 
     public function client()
     {
-        return $this->hasOne(Client::class);
+        return $this->hasOne(Client::class,'user_id');
     }
 
     public function consultant()
     {
-        return $this->hasOne(Consultant::class);
+        return $this->hasOne(Consultant::class,'user_id');
+    }
+
+    public function manager()
+    {
+        return $this->hasOne(Manager::class,'user_id');
     }
 
 

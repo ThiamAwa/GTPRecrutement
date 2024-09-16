@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Mission;
 use App\Mail\MissionAddedMail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 
 
 use Illuminate\Http\Request;
@@ -34,46 +35,69 @@ class MissionController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        // Valider les données du formulaire
+        $validated = $request->validate([
             'titre' => 'required|string|max:255',
             'description' => 'required|string',
             'date_debut' => 'required|date',
-            'date_fin' => 'nullable|date',
+            'date_fin' => 'nullable|date|after_or_equal:date_debut',
+            'status' => 'required|string',
+            'type_profil_recherche' => 'required|string',
+            'competences_requises' => 'required|array',
+            'niveau_experience' => 'required|string',
+            'duree' => 'required|integer',
+            'objectifs' => 'required|string',
             'client_id' => 'required|exists:clients,id',
-            'consultant_id' => 'required|exists:consultants,id',
+            'consultant_id' => 'nullable|exists:consultants,id'
         ]);
 
-        // Set default values
-        $validatedData['status'] = 'en_attente';
+        // Créer une nouvelle mission
+        Mission::create($validated);
 
-
-        // Create mission
-        $mission = Mission::create($validatedData);
-
-        return response()->json($mission, 201);
+        // Rediriger ou afficher un message de succès
+        return redirect()->route('missions.index')->with('success', 'Mission créée avec succès.');
     }
+
 
     public function soumettreBesion(Request $request)
     {
+        // Vérifie que l'utilisateur est bien authentifié
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
         // Validation des données
         $validatedData = $request->validate([
             'titre' => 'required|string|max:255',
             'description' => 'required|string',
             'date_debut' => 'required|date',
-            'date_fin' => 'nullable|date',
-            'client_id' => 'required|exists:clients,id',
-
+            'date_fin' => 'nullable|date|after_or_equal:date_debut',
+            'type_profil_recherche' => 'required|string',
+            'competences_requises' => 'required|string',
+            'niveau_experience' => 'required|string',
+            'duree' => 'nullable|integer',
+            'objectifs' => 'required|string',
         ]);
 
-        // Définir des valeurs par défaut
+        // Associe l'utilisateur actuel à la mission
+        $validatedData['client_id'] = $user->id;
         $validatedData['consultant_id'] = 1;
-        $validatedData['status'] = 'en_attente';
+        $validatedData['status'] = 'en_attente'; // Statut initial
 
         // Créer la mission
         $mission = Mission::create($validatedData);
-        Mail::to('thiamawa@groupeisi.com')->send(new MissionAddedMail($mission));
+        $manager = User::where('role', 'manager')->first();
 
-        return response()->json($mission, 201);
+        // Optionnel : envoyer un e-mail de confirmation
+        // Mail::to('thiamawa@groupeisi.com')->send(new MissionAddedMail($mission));
+        if ($manager) {
+            // Envoyer une notification au manager
+            $manager->notify(new NewMissionSubmitted($mission));
+        }
+
+        return response()->json($mission, 201); // Retourne la mission créée avec succès
     }
 
     public function overview()

@@ -35,13 +35,13 @@ class ClientController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'role_id' => 2, // Assigner le rôle de client
+            'role_id' => 2,
         ]);
 
         // Créer le client lié à cet utilisateur
         $client = Client::create([
             'user_id' => $user->id,
-            'company' => $request->company,
+            'adresse' => $request->company,
         ]);
 
         return response()->json($client);
