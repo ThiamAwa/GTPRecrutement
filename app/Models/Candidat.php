@@ -30,4 +30,8 @@ class Candidat extends Model
     {
         return $this->belongsTo(Offre::class, 'offre_id');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

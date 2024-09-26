@@ -22,7 +22,7 @@ class AuthControllerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => 3,
+            'role_id' => 4,
 
         ]);
 
@@ -86,6 +86,10 @@ class AuthControllerController extends Controller
             $response['consultant'] = $user->consultant;
         }
 
+        if ($user->role->name === 'Candidate') {
+            $response['candidat'] = $user->candidat;
+        }
+
 
         return response()->json($response, 200);
     }
@@ -105,6 +109,12 @@ class AuthControllerController extends Controller
     {
         return $request->user();
     }
+
+    public function me()
+    {
+        return response()->json(Auth::user());
+    }
+
 
 
 }

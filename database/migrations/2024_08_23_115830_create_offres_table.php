@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('type_contrat', 255);
             $table->date('date_debut');
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
+//            $table->foreignId('candidat_id')->constrained('clients')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -16,5 +16,6 @@ class RoleSeeder extends Seeder
         \App\Models\Role::create(['name' => 'Manager']);
         \App\Models\Role::create(['name' => 'Client']);
         \App\Models\Role::create(['name' => 'Consultant']);
+        \App\Models\Role::create(['name' => 'Candidat']);
     }
 }

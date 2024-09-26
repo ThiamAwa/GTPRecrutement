@@ -6,6 +6,8 @@ use App\Models\Consultant;
 use App\Http\Requests\StoreConsultantRequest;
 use App\Http\Requests\UpdateConsultantRequest;
 
+use Illuminate\Http\Request;
+
 class ConsultantController extends Controller
 {
     /**
@@ -19,28 +21,53 @@ class ConsultantController extends Controller
 
 //    filtrage consultant
 
-    public function filtreConsultants(Request $request)
-    {
-        $query = Consultant::query();
+    public function filterConsultant(Request $request) {
+        try {
+            // Validate input
+            $validatedData = $request->validate([
+                'competences' => 'nullable|string|max:255',
+                'experience' => 'nullable|integer|min:0',
+                'date_disponibilite' => 'nullable|date',
+            ]);
 
-        // Appliquer les filtres
-        if ($request->has('competence')) {
-            $query->where('competences', 'like', '%' . $request->input('competence') . '%');
+            // Start building the query
+            $query = Consultant::query();
+
+            // Filter by competences if provided
+            if (!empty($validatedData['competences'])) {
+                $query->where('competences', 'like', '%' . $validatedData['competences'] . '%');
+            }
+
+            // Filter by experience if provided
+            if (!empty($validatedData['experiences'])) {
+                $query->where('experiences', '>=', $validatedData['experiences']);
+            }
+
+            // Filter by date_disponibilite if provided
+            if (!empty($validatedData['date_disponibilite'])) {
+                $query->whereDate('date_disponibilite', '<=', $validatedData['date_disponibilite']);
+            }
+
+            // Fetch consultants
+            $consultants = $query->get();
+            Log::info($request->all());
+
+            return response()->json($consultants);
+
+        } catch (\Exception $e) {
+            \Log::error("Error fetching consultants: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+
+            return response()->json([
+                'error' => 'An error occurred while fetching consultants',
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
         }
-
-        if ($request->has('experience')) {
-            $query->where('experiences_professionnelles', 'like', '%' . $request->input('experience') . '%');
-        }
-
-        if ($request->has('disponibilite')) {
-            $query->where('status', $request->input('disponibilite'));
-        }
-
-        // Récupérer les consultants filtrés
-        $consultants = $query->get();
-
-        return response()->json($consultants);
     }
+
+
+
+
     /**
      * Show the form for creating a new resource.
      */

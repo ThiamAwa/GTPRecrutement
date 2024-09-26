@@ -52,7 +52,11 @@ Route::get('user', [\App\Http\Controllers\AuthControllerController::class, 'getA
 
 //Candidat
 
-Route::apiResource('/candidat',\App\Http\Controllers\CandidatController::class);
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::apiResource('/candidat',\App\Http\Controllers\CandidatController::class);
+
+}
 Route::get('/candidat/filtrage', [\App\Http\Controllers\CandidatController::class, 'filtrageCandidat']);
 Route::put('/candidat/{id}/status', [\App\Http\Controllers\CandidatController::class, 'updateStatus']);
 Route::post('candidat/{id}/accepter', [\App\Http\Controllers\CandidatController::class, 'accepterCandidat']);
@@ -60,16 +64,20 @@ Route::post('candidat/{id}/accepter', [\App\Http\Controllers\CandidatController:
 //Consultant
 
 Route::apiResource('/consultant',\App\Http\Controllers\ConsultantController::class);
+Route::get('/consultant/filtrage', [\App\Http\Controllers\ConsultantController::class, 'filterConsultant']);
 
 //Mission
 
 Route::apiResource('/missions',\App\Http\Controllers\MissionController::class);
 
 Route::put('/missions/{id}/status', [\App\Http\Controllers\MissionController::class, 'updateStatus']);
-Route::get('/missions/ongoing', [\App\Http\Controllers\MissionController::class, 'getOngoingMissions']);
+Route::get('/missionsOngoing', [\App\Http\Controllers\MissionController::class, 'getOngoingMissions']);
+Route::get('/missionsterminer', [\App\Http\Controllers\MissionController::class, 'gettermineMissions']);
 Route::get('/missions/{id}', [\App\Http\Controllers\MissionController::class, 'getMissionDetails']);
 Route::get('/missions/statistics', [\App\Http\Controllers\MissionController::class, 'getMissionStatistics']);
 Route::middleware('auth:sanctum')->post('/missions/soumettreBesion', [\App\Http\Controllers\MissionController::class,'soumettreBesion']);
+Route::put('/missions/{id}/assign-consultant', [\App\Http\Controllers\MissionController::class, 'assignConsultant']);
+
 
 Route::get('/missions/overview', [\App\Http\Controllers\MissionController::class, 'overview']);
 
@@ -81,15 +89,29 @@ Route::get('/missions/client/{clientId}', [\App\Http\Controllers\MissionControll
 Route::get('missions/showClient/{id}', [\App\Http\Controllers\MissionController::class, 'showClient']);
 
 Route::get('/missions/status', [\App\Http\Controllers\MissionController::class, 'getMissionsSansConsultant']);
+Route::get('/mission', [\App\Http\Controllers\MissionController::class, 'missionsSansConsultant']);
+Route::post('/send-email-to-consultant', [\App\Http\Controllers\MissionController::class, 'sendEmailToConsultant']);
+
+//Accepter un mission
+
+Route::post('/missions/accept', [\App\Http\Controllers\MissionController::class, 'acceptMission']);
+Route::post('/missions/reject', [\App\Http\Controllers\MissionController::class, 'rejectMission']);
+Route::post('/missions/update-status', [\App\Http\Controllers\MissionController::class, 'updateMissionStatus']);
+Route::get('missions/showClientMissionEncours/{clientId}/{missionId}', [\App\Http\Controllers\MissionController::class, 'showClientMissionEncours']);
+Route::post('missions/valider/{missionId}', [\App\Http\Controllers\MissionController::class, 'validerMission']);
+Route::post('/feedback', [\App\Http\Controllers\FeedbackController::class, 'soumettreFeedback']);
+
+
 
 
 //Offre
 
 Route::apiResource('/offre',\App\Http\Controllers\OffreController::class);
 Route::get('/offres/filtrage', [\App\Http\Controllers\OffreController::class, 'filtrage']);
+Route::post('/publier/offre', [\App\Http\Controllers\OffreController::class, 'publier']);
 
 
-//
+//client
 
 Route::apiResource('/client',\App\Http\Controllers\ClientController::class);
 
@@ -115,4 +137,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications', [\App\Http\Controllers\NotificationController::class, 'store']);
 
 });
+
+Route::middleware('auth:sanctum')->get('user/me', [\App\Http\Controllers\AuthControllerController::class, 'me']);
 

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+
+Route::get('/mission/accept', [MissionController::class, 'acceptMission'])->name('mission.accept');
+Route::get('/mission/reject', [MissionController::class, 'rejectMission'])->name('mission.reject');

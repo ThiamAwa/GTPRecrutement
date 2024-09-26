@@ -13,15 +13,27 @@ return new class extends Migration
     {
         Schema::create('contrats', function (Blueprint $table) {
             $table->id();
+            $table->string('type_contrat'); // Ex: CDD, CDI, Freelance, etc.
+            $table->enum('statut', ['en_cours', 'terminé', 'annulé'])->default('en_cours'); // Statut du contrat
             $table->date('date_debut');
             $table->date('date_fin');
-            $table->string('type_contrat');
-            $table->boolean('statut');
-            $table->date('date_Debut');
-            $table->date('date_Fin');
-            $table->foreignIdFor(\App\Models\Consultant::class);
+
+            // Relations
+            $table->foreignIdFor(\App\Models\Consultant::class)
+                ->constrained()
+                ->onDelete('cascade');
+
+            $table->foreignIdFor(\App\Models\Mission::class)
+                ->constrained()
+                ->onDelete('cascade');
+
+            $table->foreignIdFor(\App\Models\Client::class)
+                ->constrained()
+                ->onDelete('cascade');
+
             $table->timestamps();
         });
+
     }
 
     /**

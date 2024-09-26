@@ -63,6 +63,11 @@ class User extends Authenticatable
         return $this->hasOne(Manager::class,'user_id');
     }
 
+    public function candidat()
+    {
+        return $this->hasOne(Manager::class,'user_id');
+    }
+
 
 
     /**

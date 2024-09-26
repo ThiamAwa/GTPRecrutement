@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mission;
 use App\Models\offre;
 use App\Http\Requests\StoreoffreRequest;
 use App\Http\Requests\UpdateoffreRequest;
@@ -117,6 +118,32 @@ class OffreController extends Controller
         $offres = $query->get();
 
         return response()->json($offres);
+    }
+
+    public function publier(Request $request)
+    {
+        $mission = Mission::find($request->input('mission_id'));
+
+
+        if ($mission) {
+            // Créer une nouvelle offre avec les informations de la mission
+            $offre = new Offre();
+            $offre->titre = $mission->titre;
+            $offre->description = $mission->description;
+            $offre->date_debut = $mission->date_debut;
+            $offre->competences = $mission->competences_requises;
+            $offre->experience = $mission->niveau_experience;
+//            $offre->status = 'en_attente';
+            $offre->type_contrat='CDI';
+            $offre->lieu='DAKAR';
+            $offre->client_id=$mission->client->id;
+
+            $offre->save();
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Mission introuvable']);
     }
 
 }
